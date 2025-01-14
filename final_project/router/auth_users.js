@@ -57,19 +57,22 @@ regd_users.post("/login", (req,res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-    if(req.params.isbn in books) {
-        books[isbn].reviews[req.session.username] = req.params.body;
+    const isbn = req.params.isbn;
+    if(isbn in books) {
+        const username = req.session.authorization.username;
+        books[isbn].reviews[username] = req.body.text;
         return res.send({msg: 'Thank for your review'});
     }
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    return send({});
 });
 
 // Delete a book review
 regd_users.delete("/auth/review/:isbn", (req, res) => {
-    if(req.params.isbn in books && req.session.username in books[isbn].reviews) {
-        books[isbn].reviews[req.session.username] = req.params.body;
-        return res.send({msg: 'Thank for your review'});
+    const isbn = req.params.isbn;
+    const username = req.session.authorization.username;
+    if(isbn in books && username in books[isbn].reviews) {
+        books[isbn].reviews[username] = req.params.body;
+        return res.send({msg: 'Review deleted'});
     }
     return res.send({mgs: 'ISBN or user review not found'});
 });
